@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<title>Kalorien Tracker</title>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<style>
+
+body {
+
+  font-family: Arial;
+
+  background: #0E0E0E;
+
+  color: white;
+
+  padding: 20px;
+
+}
+
+.card {
+
+  background: #1C1C1E;
+
+  padding: 15px;
+
+  border-radius: 15px;
+
+  margin-bottom: 15px;
+
+}
+
+input, button {
+
+  width: 100%;
+
+  padding: 12px;
+
+  margin-top: 10px;
+
+}
+
+.big {
+
+  font-size: 38px;
+
+  font-weight: bold;
+
+}
+
+.progressBar {
+
+  height: 12px;
+
+  background: #333;
+
+  border-radius: 10px;
+
+  margin-top: 10px;
+
+}
+
+.bar {
+
+  height: 12px;
+
+  background: orange;
+
+  border-radius: 10px;
+
+}
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+
+<h2>🔥 Kalorien Tracker</h2>
+
+
+
+<div class="card">
+
+<input id="startWeight" placeholder="Startgewicht (kg)">
+
+<input id="goalWeight" placeholder="Zielgewicht (kg)">
+
+<input id="targetDeficit" placeholder="Soll Defizit / Tag (z. B. -350)">
+
+</div>
+
+
+
+<div class="card">
+
+<input id="calInput" placeholder="Kalorien (z. B. -500)">
+
+<button onclick="addEntry()">Eintrag speichern</button>
+
+</div>
+
+
+
+<div class="card">
+
+<div class="big" id="goalDisplay">0 von 0 kcal</div>
+
+<div id="percent"></div>
+
+
+
+<div class="progressBar">
+
+  <div class="bar" id="progressBar"></div>
+
+</div>
+
+
+
+<div id="days"></div>
+
+<div id="compare"></div>
+
+</div>
+
+
+
+<div class="card">
+
+<canvas id="chart"></canvas>
+
+</div>
+
+
+
+<script>
+
+let entries = JSON.parse(localStorage.getItem("entries") || "[]");
+
+
+
+function save() {
+
+  localStorage.setItem("entries", JSON.stringify(entries));
+
+}
+
+
+
+function addEntry() {
+
+  let cal = parseInt(document.getElementById("calInput").value);
+
+
+
+  if (isNaN(cal)) {
+
+    alert("Bitte Zahl eingeben!");
+
+    return;
+
+  }
+
+
+
+  entries.push({
+
+    cal: cal,
+
+    date: new Date().toLocaleDateString()
+
+  });
+
+
+
+  document.getElementById("calInput").value = "";
+
+  save();
+
+  update();
+
+}
+
+
+
+function update() {
+
+  let total = entries.reduce((a,b)=>a+b.cal,0);
+
+  let days = entries.length;
+
+
+
+  let start = parseFloat(document.getElementById("startWeight").value);
+
+  let goal = parseFloat(document.getElementById("goalWeight").value);
+
+
+
+  let ist = [];
+
+  let soll = [];
+
+
+
+  let target = parseInt(document.getElementById("targetDeficit").value) || -350;
+
+
+
+  let sum = 0;
+
+
+
+  entries.forEach((e,i)=>{
+
+    sum += e.cal;
+
+    ist.push(sum);
+
+    soll.push((i+1)*target);
+
+  });
+
+
+
+  // 🎯 Zielberechnung
+
+  if (start && goal) {
+
+    let kgGoal = start - goal;
+
+    let kcalGoal = kgGoal * 7000;
+
+
+
+    let percent = Math.min(100, (Math.abs(total) / kcalGoal) * 100);
+
+
+
+    document.getElementById("goalDisplay").innerText =
+
+      total.toLocaleString() + " von -" + kcalGoal.toLocaleString() + " kcal";
+
+
+
+    document.getElementById("percent").innerText =
+
+      percent.toFixed(1) + " % geschafft";
+
+
+
+    document.getElementById("progressBar").style.width =
+
+      percent + "%";
+
+  }
+
+
+
+  document.getElementById("days").innerText =
+
+    "Tage: " + days;
+
+
+
+  // IST vs SOLL
+
+  if (days > 0) {
+
+    let diff = total - soll[soll.length-1];
+
+
+
+    document.getElementById("compare").innerText =
+
+      diff < 0
+
+      ? "🔥 Voraus: " + diff + " kcal"
+
+      : "⚠️ Hinterher: +" + diff + " kcal";
+
+  }
+
+
+
+  drawChart(ist, soll);
+
+}
+
+
+
+let chart;
+
+
+
+function drawChart(ist, soll) {
+
+  if (chart) chart.destroy();
+
+
+
+  chart = new Chart(document.getElementById("chart"), {
+
+    type: "line",
+
+    data: {
+
+      labels: ist.map((_,i)=>"Tag "+(i+1)),
+
+      datasets: [
+
+        { label: "IST", data: ist },
+
+        { label: "SOLL", data: soll }
+
+      ]
+
+    }
+
+  });
+
+}
+
+
+
+update();
+
+</script>
+
+
+
+</body>
+
+</html>
