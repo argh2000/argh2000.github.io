@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 
 <html lang="de">
@@ -11,10 +9,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-<title>Kalorien Tracker PRO</title>
+
+<title>Tracker PRO MAX</title>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 
 <style>
@@ -23,55 +24,81 @@ body {
 
   margin:0;
 
-  font-family: -apple-system, BlinkMacSystemFont;
+  font-family:-apple-system, BlinkMacSystemFont;
 
-  background:#0B0B0F;
+  background: linear-gradient(180deg,#0B0B0F,#111);
 
   color:white;
 
 }
 
 
-.container { padding:16px; }
+
+.container {
+
+  padding:16px;
+
+}
+
+
+
+h2 {
+
+  font-size:22px;
+
+  margin-bottom:12px;
+
+}
+
 
 
 .card {
 
-  background:#1A1A22;
+  background: rgba(255,255,255,0.05);
+
+  backdrop-filter: blur(10px);
+
+  border-radius:20px;
 
   padding:16px;
-
-  border-radius:16px;
 
   margin-bottom:16px;
 
 }
 
 
-h2 { margin-bottom:10px; }
 
-
-input, button {
+input,button {
 
   width:100%;
 
-  padding:12px;
+  padding:14px;
 
   margin-top:8px;
 
-  border-radius:10px;
-
   border:none;
+
+  border-radius:12px;
+
+  font-size:16px;
 
 }
 
 
-input { background:#2A2A33; color:white; }
+
+input {
+
+  background:rgba(255,255,255,0.08);
+
+  color:white;
+
+}
+
 
 
 button {
 
-  background:#FF7A00;
+  background: linear-gradient(90deg,#FF7A00,#FF9500);
 
   color:white;
 
@@ -80,100 +107,139 @@ button {
 }
 
 
-.tabs {
-
-  display:flex;
-
-}
-
-
-.tabs button {
-
-  flex:1;
-
-  background:#222;
-
-}
-
-
-.active {
-
-  background:#FF7A00 !important;
-
-}
-
 
 .big {
 
-  font-size:28px;
+  font-size:34px;
 
   font-weight:bold;
 
 }
 
 
+
+.sub {
+
+  opacity:0.7;
+
+  font-size:14px;
+
+}
+
+
+
 .progress {
 
-  height:10px;
+  height:12px;
 
   background:#333;
 
-  border-radius:10px;
+  border-radius:12px;
+
+  margin-top:12px;
+
+}
+
+
+
+.bar {
+
+  height:12px;
+
+  background:linear-gradient(90deg,#FF7A00,#FF9500);
+
+  border-radius:12px;
+
+}
+
+
+
+.calendar {
+
+  display:grid;
+
+  grid-template-columns:repeat(7,1fr);
+
+  gap:6px;
 
   margin-top:10px;
 
 }
 
 
-.bar {
 
-  height:10px;
+.day {
 
-  background:#FF7A00;
+  padding:10px;
 
-  border-radius:10px;
+  border-radius:12px;
+
+  text-align:center;
+
+  background:#222;
+
+  font-size:14px;
 
 }
+
+
+
+.done {
+
+  background:#2ecc71;
+
+}
+
+
+
+.today {
+
+  border:2px solid #FF9500;
+
+}
+
 
 
 .entry {
 
   background:#222;
 
-  padding:10px;
+  padding:12px;
 
-  border-radius:10px;
+  border-radius:12px;
 
   margin-top:8px;
 
 }
+
+
+
+.tag {
+
+  font-size:12px;
+
+  opacity:0.6;
+
+}
+
+
 
 </style>
 
 </head>
 
 
+
 <body>
+
 
 
 <div class="container">
 
 
-<h2>🔥 Tracker PRO</h2>
 
+<h2>🔥 Dein Fortschritt</h2>
 
-<div class="tabs">
-
-<button id="tabBtn1" class="active" onclick="showTab(1)">Tracking</button>
-
-<button id="tabBtn2" onclick="showTab(2)">Analyse</button>
-
-</div>
-
-
-<!-- TAB 1 -->
-
-<div id="tab1">
 
 
 <div class="card" id="setup">
@@ -182,29 +248,32 @@ button {
 
 <input id="goal" placeholder="Zielgewicht">
 
-<input id="target" placeholder="Soll Defizit / Tag (-350)">
+<input id="need" placeholder="Kalorienbedarf (z. B. 2500)">
 
 <button onclick="saveSetup()">Speichern</button>
 
 </div>
 
 
+
 <div class="card">
 
-<input id="cal" placeholder="Kaloriendefizit heute">
+<input id="food" placeholder="🍽 Gegessen heute">
 
-<input id="weight" placeholder="Gewicht (optional)">
+<input id="weight" placeholder="⚖️ Gewicht">
 
-<button onclick="add()">Speichern / Aktualisieren</button>
+<button onclick="add()">Speichern</button>
 
 </div>
 
 
+
 <div class="card">
 
-<div class="big" id="goalText"></div>
+<div class="big" id="summary"></div>
 
-<div id="status"></div>
+<div class="sub" id="forecast"></div>
+
 
 
 <div class="progress">
@@ -213,25 +282,19 @@ button {
 
 </div>
 
-
-<div id="forecast"></div>
-
 </div>
+
 
 
 <div class="card">
 
-<div id="history"></div>
+<h3>📅 Kalender</h3>
+
+<div id="calendar" class="calendar"></div>
 
 </div>
 
 
-</div>
-
-
-<!-- TAB 2 -->
-
-<div id="tab2" style="display:none;">
 
 <div class="card">
 
@@ -240,18 +303,19 @@ button {
 </div>
 
 
+
 <div class="card">
 
-<div id="compare"></div>
+<h3>📜 Verlauf</h3>
 
-<div id="milestones"></div>
-
-</div>
+<div id="history"></div>
 
 </div>
 
 
+
 </div>
+
 
 
 <script>
@@ -261,33 +325,18 @@ let entries = JSON.parse(localStorage.getItem("entries")||"[]");
 let config = JSON.parse(localStorage.getItem("config")||"null");
 
 
-// Tabs
-
-function showTab(n){
-
- tab1.style.display = n===1?"block":"none";
-
- tab2.style.display = n===2?"block":"none";
-
-
- tabBtn1.classList.toggle("active",n===1);
-
- tabBtn2.classList.toggle("active",n===2);
-
-}
-
 
 // Setup
 
 function saveSetup(){
 
- config = {
+ config={
 
-  start: parseFloat(start.value),
+  start:parseFloat(start.value),
 
-  goal: parseFloat(goal.value),
+  goal:parseFloat(goal.value),
 
-  target: parseInt(target.value)
+  need:parseInt(need.value)
 
  };
 
@@ -300,100 +349,173 @@ function saveSetup(){
 }
 
 
+
 if(config) setup.style.display="none";
 
 
-// Add / Update
+
+// Add
 
 function add(){
 
  let today=new Date().toDateString();
 
 
- let index=entries.findIndex(e =>
+
+ let idx=entries.findIndex(e =>
 
   new Date(e.date).toDateString()===today
 
  );
 
 
- let calVal=parseInt(cal.value);
+
+ let foodVal=parseInt(food.value);
 
  let w=parseFloat(weight.value);
 
 
- if(isNaN(calVal)) return alert("Zahl eingeben");
+
+ if(isNaN(foodVal)) return alert("Kalorien eingeben");
 
 
- if(index !== -1){
 
-  entries[index].cal = calVal;
+ let deficit=foodVal-config.need;
 
-  entries[index].weight = w || null;
+
+
+ if(idx!==-1){
+
+  entries[idx].food=foodVal;
+
+  entries[idx].deficit=deficit;
+
+  entries[idx].weight=w||null;
 
  } else {
 
   entries.push({
 
-   cal: calVal,
+   food:foodVal,
 
-   weight: w || null,
+   deficit:deficit,
 
-   date: new Date().toISOString()
+   weight:w||null,
+
+   date:new Date().toISOString()
 
   });
 
  }
 
 
+
  localStorage.setItem("entries",JSON.stringify(entries));
 
- cal.value=""; weight.value="";
+ food.value=""; weight.value="";
 
  update();
 
 }
 
 
-// Edit
 
-function editEntry(i){
+// KI
 
- let c = prompt("Kalorien:", entries[i].cal);
+function kcalPerKg(){
 
- if(c===null) return;
-
-
- let w = prompt("Gewicht:", entries[i].weight||"");
+ if(entries.length<10) return 7000;
 
 
- entries[i].cal=parseInt(c);
 
- entries[i].weight=w?parseFloat(w):null;
+ let k=0,w=0;
 
 
- localStorage.setItem("entries",JSON.stringify(entries));
 
- update();
+ for(let i=1;i<entries.length;i++){
+
+  if(entries[i].weight && entries[i-1].weight){
+
+   k+=entries[i].deficit;
+
+   w+=entries[i].weight - entries[i-1].weight;
+
+  }
+
+ }
+
+
+
+ return w===0?7000:Math.abs(k/w);
 
 }
 
 
-// Delete
 
-function deleteEntry(i){
+// Kalender
 
- if(confirm("Löschen?")){
+function buildCalendar(){
 
-  entries.splice(i,1);
+ let html="";
 
-  localStorage.setItem("entries",JSON.stringify(entries));
+ let now=new Date();
 
-  update();
+ let days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+
+
+
+ for(let i=1;i<=days;i++){
+
+  let d=new Date(now.getFullYear(),now.getMonth(),i);
+
+  let has=entries.find(e =>
+
+   new Date(e.date).toDateString()===d.toDateString()
+
+  );
+
+
+
+  let cls="day";
+
+  if(has) cls+=" done";
+
+  if(d.toDateString()===new Date().toDateString()) cls+=" today";
+
+
+
+  html+=`<div class="${cls}" onclick="loadDay('${d.toDateString()}')">${i}</div>`;
+
+ }
+
+
+
+ calendar.innerHTML=html;
+
+}
+
+
+
+function loadDay(d){
+
+ let e=entries.find(x =>
+
+  new Date(x.date).toDateString()===d
+
+ );
+
+
+
+ if(e){
+
+  food.value=e.food;
+
+  weight.value=e.weight||"";
 
  }
 
 }
+
 
 
 // Update
@@ -403,52 +525,45 @@ function update(){
  if(!config) return;
 
 
- let total=0, ist=[], soll=[], weights=[], labels=[];
 
- let sum=0;
+ let total=0,data=[],weights=[];
 
 
- entries.forEach((e,i)=>{
 
-  total+=e.cal;
+ entries.forEach(e=>{
 
-  sum+=e.cal;
+  total+=e.deficit;
 
-  ist.push(sum);
-
-  soll.push((i+1)*config.target);
+  data.push(total);
 
   weights.push(e.weight);
-
-  labels.push("T"+(i+1));
 
  });
 
 
- let goalKcal=(config.start-config.goal)*7000;
 
- let percent=Math.min(100,(Math.abs(total)/goalKcal)*100);
+ let k=kcalPerKg();
 
-
- goalText.innerText =
-
-  total.toLocaleString()+" / -"+goalKcal.toLocaleString()+" kcal";
+ let kg=total/k;
 
 
- bar.style.width = percent+"%";
+
+ summary.innerText =
+
+  total.toLocaleString()+" kcal  •  "+kg.toFixed(2)+" kg";
 
 
- let expected=entries.length*config.target;
 
- let diff=total-expected;
+ let percent=Math.min(100,Math.abs(total)/((config.start-config.goal)*7000)*100);
 
-
- status.innerText =
-
-  diff<0?"🔥 Voraus":"⚠️ Hinterher";
+ bar.style.width=percent+"%";
 
 
- let avg = entries.length ? total/entries.length : 0;
+
+ let avg=entries.length?total/entries.length:0;
+
+ let goalKcal=(config.start-config.goal)*k;
+
 
 
  if(avg!==0){
@@ -458,77 +573,48 @@ function update(){
   let daysLeft=remain/Math.abs(avg);
 
 
+
   forecast.innerText =
 
-   "⏱ ca. "+Math.abs(daysLeft.toFixed(0))+" Tage";
+   "⏱ Ziel in ca. "+Math.abs(daysLeft.toFixed(0))+" Tagen";
 
  }
 
 
+
+ drawChart(data,weights);
+
+ buildCalendar();
+
  renderHistory();
 
- drawChart(labels,ist,soll,weights);
-
- buildMilestones(avg,goalKcal);
-
 }
 
-
-// History
-
-function renderHistory(){
-
- let html="<h3>Einträge</h3>";
-
-
- entries.forEach((e,i)=>{
-
-  html += `
-
-  <div class="entry">
-
-  ${new Date(e.date).toLocaleDateString()}<br>
-
-  ${e.cal} kcal | ${e.weight||"-"} kg<br>
-
-  <button onclick="editEntry(${i})">✏️</button>
-
-  <button onclick="deleteEntry(${i})">🗑️</button>
-
-  </div>`;
-
- });
-
-
- history.innerHTML=html;
-
-}
 
 
 // Chart
 
 let chart;
 
-function drawChart(labels,ist,soll,weights){
+function drawChart(data,weights){
 
  if(chart) chart.destroy();
 
 
- chart = new Chart(document.getElementById("chart"), {
+
+ chart=new Chart(document.getElementById("chart"),{
 
   type:"line",
 
   data:{
 
-   labels,
+   labels:data.map((_,i)=>i+1),
 
    datasets:[
 
-    {label:"IST kcal",data:ist},
+    {label:"Defizit",data:data},
 
-    {label:"SOLL kcal",data:soll},
-
-    {label:"Gewicht",data:weights, yAxisID:"y1"}
+    {label:"Gewicht",data:weights,yAxisID:"y1"}
 
    ]
 
@@ -536,17 +622,13 @@ function drawChart(labels,ist,soll,weights){
 
   options:{
 
+   plugins:{legend:{labels:{color:"white"}}},
+
    scales:{
 
-    y:{beginAtZero:false},
+    y:{ticks:{color:"white"}},
 
-    y1:{
-
-     position:"right",
-
-     grid:{drawOnChartArea:false}
-
-    }
+    y1:{position:"right",ticks:{color:"white"},grid:{drawOnChartArea:false}}
 
    }
 
@@ -557,30 +639,43 @@ function drawChart(labels,ist,soll,weights){
 }
 
 
-// Milestones
 
-function buildMilestones(avg,goalKcal){
+// Verlauf
 
- let html="<h3>Meilensteine</h3>";
+function renderHistory(){
+
+ let html="";
 
 
- [0.25,0.5,0.75,1].forEach(p=>{
 
-  let d = avg ? Math.abs((goalKcal*p)/avg).toFixed(0) : "?";
+ entries.forEach(e=>{
 
-  html += `<div>${p*100}% → ${d} Tage</div>`;
+  html+=`
+
+  <div class="entry">
+
+  <div class="tag">${new Date(e.date).toLocaleDateString()}</div>
+
+  🍽 ${e.food} kcal → 🔥 ${e.deficit} kcal<br>
+
+  ⚖️ ${e.weight||"-"} kg
+
+  </div>`;
 
  });
 
 
- milestones.innerHTML=html;
+
+ history.innerHTML=html;
 
 }
+
 
 
 update();
 
 </script>
+
 
 
 </body>
