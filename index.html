@@ -9,13 +9,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-
 <title>Tracker PRO MAX</title>
 
 
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 
 
 <style>
@@ -33,13 +30,11 @@ body {
 }
 
 
-
 .container {
 
   padding:16px;
 
 }
-
 
 
 h2 {
@@ -49,7 +44,6 @@ h2 {
   margin-bottom:12px;
 
 }
-
 
 
 .card {
@@ -65,7 +59,6 @@ h2 {
   margin-bottom:16px;
 
 }
-
 
 
 input,button {
@@ -85,7 +78,6 @@ input,button {
 }
 
 
-
 input {
 
   background:rgba(255,255,255,0.08);
@@ -93,7 +85,6 @@ input {
   color:white;
 
 }
-
 
 
 button {
@@ -107,7 +98,6 @@ button {
 }
 
 
-
 .big {
 
   font-size:34px;
@@ -117,7 +107,6 @@ button {
 }
 
 
-
 .sub {
 
   opacity:0.7;
@@ -125,7 +114,6 @@ button {
   font-size:14px;
 
 }
-
 
 
 .progress {
@@ -141,7 +129,6 @@ button {
 }
 
 
-
 .bar {
 
   height:12px;
@@ -151,7 +138,6 @@ button {
   border-radius:12px;
 
 }
-
 
 
 .calendar {
@@ -165,7 +151,6 @@ button {
   margin-top:10px;
 
 }
-
 
 
 .day {
@@ -183,7 +168,6 @@ button {
 }
 
 
-
 .done {
 
   background:#2ecc71;
@@ -191,13 +175,11 @@ button {
 }
 
 
-
 .today {
 
   border:2px solid #FF9500;
 
 }
-
 
 
 .entry {
@@ -213,7 +195,6 @@ button {
 }
 
 
-
 .tag {
 
   font-size:12px;
@@ -223,23 +204,18 @@ button {
 }
 
 
-
 </style>
 
 </head>
 
 
-
 <body>
-
 
 
 <div class="container">
 
 
-
 <h2>🔥 Dein Fortschritt</h2>
-
 
 
 <div class="card" id="setup">
@@ -255,7 +231,6 @@ button {
 </div>
 
 
-
 <div class="card">
 
 <input id="food" placeholder="🍽 Gegessen heute">
@@ -267,13 +242,11 @@ button {
 </div>
 
 
-
 <div class="card">
 
 <div class="big" id="summary"></div>
 
 <div class="sub" id="forecast"></div>
-
 
 
 <div class="progress">
@@ -285,7 +258,6 @@ button {
 </div>
 
 
-
 <div class="card">
 
 <h3>📅 Kalender</h3>
@@ -295,13 +267,11 @@ button {
 </div>
 
 
-
 <div class="card">
 
 <canvas id="chart"></canvas>
 
 </div>
-
 
 
 <div class="card">
@@ -313,9 +283,7 @@ button {
 </div>
 
 
-
 </div>
-
 
 
 <script>
@@ -323,7 +291,6 @@ button {
 let entries = JSON.parse(localStorage.getItem("entries")||"[]");
 
 let config = JSON.parse(localStorage.getItem("config")||"null");
-
 
 
 // Setup
@@ -349,9 +316,7 @@ function saveSetup(){
 }
 
 
-
 if(config) setup.style.display="none";
-
 
 
 // Add
@@ -361,7 +326,6 @@ function add(){
  let today=new Date().toDateString();
 
 
-
  let idx=entries.findIndex(e =>
 
   new Date(e.date).toDateString()===today
@@ -369,19 +333,15 @@ function add(){
  );
 
 
-
  let foodVal=parseInt(food.value);
 
  let w=parseFloat(weight.value);
 
 
-
  if(isNaN(foodVal)) return alert("Kalorien eingeben");
 
 
-
  let deficit=foodVal-config.need;
-
 
 
  if(idx!==-1){
@@ -409,7 +369,6 @@ function add(){
  }
 
 
-
  localStorage.setItem("entries",JSON.stringify(entries));
 
  food.value=""; weight.value="";
@@ -419,7 +378,6 @@ function add(){
 }
 
 
-
 // KI
 
 function kcalPerKg(){
@@ -427,9 +385,7 @@ function kcalPerKg(){
  if(entries.length<10) return 7000;
 
 
-
  let k=0,w=0;
-
 
 
  for(let i=1;i<entries.length;i++){
@@ -445,11 +401,9 @@ function kcalPerKg(){
  }
 
 
-
  return w===0?7000:Math.abs(k/w);
 
 }
-
 
 
 // Kalender
@@ -463,7 +417,6 @@ function buildCalendar(){
  let days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
 
 
-
  for(let i=1;i<=days;i++){
 
   let d=new Date(now.getFullYear(),now.getMonth(),i);
@@ -475,7 +428,6 @@ function buildCalendar(){
   );
 
 
-
   let cls="day";
 
   if(has) cls+=" done";
@@ -483,17 +435,14 @@ function buildCalendar(){
   if(d.toDateString()===new Date().toDateString()) cls+=" today";
 
 
-
   html+=`<div class="${cls}" onclick="loadDay('${d.toDateString()}')">${i}</div>`;
 
  }
 
 
-
  calendar.innerHTML=html;
 
 }
-
 
 
 function loadDay(d){
@@ -503,7 +452,6 @@ function loadDay(d){
   new Date(x.date).toDateString()===d
 
  );
-
 
 
  if(e){
@@ -517,7 +465,6 @@ function loadDay(d){
 }
 
 
-
 // Update
 
 function update(){
@@ -525,9 +472,7 @@ function update(){
  if(!config) return;
 
 
-
  let total=0,data=[],weights=[];
-
 
 
  entries.forEach(e=>{
@@ -541,11 +486,9 @@ function update(){
  });
 
 
-
  let k=kcalPerKg();
 
  let kg=total/k;
-
 
 
  summary.innerText =
@@ -553,17 +496,14 @@ function update(){
   total.toLocaleString()+" kcal  •  "+kg.toFixed(2)+" kg";
 
 
-
  let percent=Math.min(100,Math.abs(total)/((config.start-config.goal)*7000)*100);
 
  bar.style.width=percent+"%";
 
 
-
  let avg=entries.length?total/entries.length:0;
 
  let goalKcal=(config.start-config.goal)*k;
-
 
 
  if(avg!==0){
@@ -573,13 +513,11 @@ function update(){
   let daysLeft=remain/Math.abs(avg);
 
 
-
   forecast.innerText =
 
    "⏱ Ziel in ca. "+Math.abs(daysLeft.toFixed(0))+" Tagen";
 
  }
-
 
 
  drawChart(data,weights);
@@ -591,7 +529,6 @@ function update(){
 }
 
 
-
 // Chart
 
 let chart;
@@ -599,7 +536,6 @@ let chart;
 function drawChart(data,weights){
 
  if(chart) chart.destroy();
-
 
 
  chart=new Chart(document.getElementById("chart"),{
@@ -639,13 +575,11 @@ function drawChart(data,weights){
 }
 
 
-
 // Verlauf
 
 function renderHistory(){
 
  let html="";
-
 
 
  entries.forEach(e=>{
@@ -665,17 +599,14 @@ function renderHistory(){
  });
 
 
-
  history.innerHTML=html;
 
 }
 
 
-
 update();
 
 </script>
-
 
 
 </body>
